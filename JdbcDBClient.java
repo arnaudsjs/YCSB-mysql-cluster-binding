@@ -285,7 +285,7 @@ public class JdbcDBClient extends DB implements JdbcDBClientConstants {
 		select.append(" WHERE ");
 		select.append(PRIMARY_KEY);
 		select.append(" >= ");
-		select.append("?;");
+		select.append("? ORDER BY " + PRIMARY_KEY + " LIMIT ?;"); 
 		PreparedStatement scanStatement = this.connection
 				.prepareStatement(select.toString());
 		if (this.jdbcFetchSize != null)
@@ -357,6 +357,7 @@ public class JdbcDBClient extends DB implements JdbcDBClientConstants {
 				scanStatement = createAndCacheScanStatement(type, startKey);
 			}
 			scanStatement.setString(1, startKey);
+			scanStatement.setInt(2, recordcount);
 			ResultSet resultSet = scanStatement.executeQuery();
 			for (int i = 0; i < recordcount && resultSet.next(); i++) {
 				if (result != null && fields != null) {
@@ -388,6 +389,7 @@ public class JdbcDBClient extends DB implements JdbcDBClientConstants {
 			return -1;
 		}
 		try {
+			this.connection.setReadOnly(false);
 			int numFields = values.size();
 			StatementType type = new StatementType(
 					StatementType.OperationType.UPDATE, numFields);
@@ -422,6 +424,7 @@ public class JdbcDBClient extends DB implements JdbcDBClientConstants {
 			return -1;
 		}
 		try {
+			this.connection.setReadOnly(false);
 			int numFields = values.size();
 			StatementType type = new StatementType(
 					StatementType.OperationType.INSERT, numFields);
@@ -456,6 +459,7 @@ public class JdbcDBClient extends DB implements JdbcDBClientConstants {
 			return -1;
 		}
 		try {
+			this.connection.setReadOnly(false);
 			StatementType type = new StatementType(
 					StatementType.OperationType.DELETE, 1);
 			PreparedStatement deleteStatement = cachedStatements.get(type);
