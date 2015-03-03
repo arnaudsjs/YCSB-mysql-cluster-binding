@@ -7,8 +7,8 @@
     <version>0.1.4</version>
   </parent>
   
-  <artifactId>jdbc-binding</artifactId>
-  <name>JDBC DB Binding</name>
+  <artifactId>mysql-binding</artifactId>
+  <name>MySQL DB Binding</name>
   <packaging>jar</packaging>
 
   <dependencies>
